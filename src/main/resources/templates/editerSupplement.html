@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<link rel="stylesheet" type="text/css"
+	href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
+<head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-header">Modifier un Supplément</div>
+        <div class="card-body">
+            <form th:action="@{/updateSupplement}" th:object="${supplement}" method="post">
+                <input type="hidden" th:field="*{idSupplement}" />
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" class="form-control" th:field="*{nomSupplement}" />
+                </div>
+                <div class="form-group">
+                    <label>Dosage</label>
+                    <input type="text" class="form-control" th:field="*{dosageSupplement}" />
+                </div>
+                <div class="form-group">
+                    <label>Prix</label>
+                    <input type="number" step="0.01" class="form-control" th:field="*{prixSupplement}" />
+                </div>
+                <div class="form-group">
+                    <label>Marque</label>
+                    <input type="text" class="form-control" th:field="*{marqueSupplement}" />
+                </div>
+                <div class="form-group">
+                    <label>Date de Création</label>
+                    <input type="date" class="form-control" name="date" th:value="${#dates.format(supplement.dateCreation, 'yyyy-MM-dd')}" />
+                </div>
+                <button type="submit" class="btn btn-primary">Mettre à jour</button>
+                <a class="btn btn-secondary" th:href="@{/listeSupplements}">Annuler</a>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
