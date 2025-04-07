@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+
 import java.util.Date;
 
 @Entity
@@ -18,6 +20,8 @@ public class Supplement {
     private Double prixSupplement;
     private String marqueSupplement;
     private Date dateCreation;
+    @ManyToOne
+    private Nutritional nutritional;
 
     public Supplement() {
         super();
@@ -81,7 +85,13 @@ public class Supplement {
     public void setDateCreation(Date dateCreation) {
         this.dateCreation = dateCreation;
     }
+    public Nutritional getNutritional() {
+        return nutritional;
+    }
 
+    public void setNutritional(Nutritional nutritional) {
+        this.nutritional = nutritional;
+    }
     @Override
     public String toString() {
         return "Supplement [idSupplement=" + idSupplement + ", nomSupplement=" + nomSupplement 

@@ -1,6 +1,7 @@
 // SupplementServiceImpl.java
 package com.mohamed.supplements.service;
 
+import com.mohamed.supplements.entities.Nutritional;
 import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.repos.SupplementRepository;
 
@@ -53,4 +54,68 @@ public class SupplementServiceImpl implements SupplementService {
     public Page<Supplement> getAllSupplementsParPage(int page, int size) {
         return supplementRepository.findAll(PageRequest.of(page, size));
     }
+    @Override
+    public List<Supplement> findByNomSupplement(String nom) {
+        return supplementRepository.findByNomSupplement(nom);
+    }
+
+    @Override
+    public List<Supplement> findByNomSupplementContains(String nom) {
+        return supplementRepository.findByNomSupplementContains(nom);
+    }
+
+	@Override
+	public List<Supplement> findByNomPrix(String nom, Double prix) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Supplement> findByNutritional(Nutritional nutritional) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Supplement> findByNutritionalIdNutri(long id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Supplement> findByOrderByNomSupplementAsc() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Supplement> trierSupplementsNomsPrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+  /*  @Override
+    public List<Supplement> findByNomPrix(String nom, Double prix) {
+        return supplementRepository.findByNomPrix(nom, prix);
+    }
+
+    @Override
+    public List<Supplement> findByNutritional(Nutritional nutritional) {
+        return supplementRepository.findByNutritional(nutritional);
+    }
+
+    @Override
+    public List<Supplement> findByNutritionalIdNutri(long id) {
+        return supplementRepository.findByNutritionalIdNutri(id);
+    }
+
+    @Override
+    public List<Supplement> findByOrderByNomSupplementAsc() {
+        return supplementRepository.findByOrderByNomSupplementAsc();
+    }
+
+    @Override
+    public List<Supplement> trierSupplementsNomsPrix() {
+        return supplementRepository.trierSupplementsNomsPrix();
+    }*/
 }
