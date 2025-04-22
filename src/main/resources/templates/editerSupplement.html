@@ -1,37 +1,59 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-	<link rel="stylesheet" type="text/css"
-	href="webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
+    <meta charset="utf-8">
+    <title>Modifier des Suppléments</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/4.3.1/css/bootstrap.min.css" />
+</head>
 <body>
+<div th:replace="template"></div>
 <div class="container mt-5">
     <div class="card">
-        <div class="card-header">Modifier un Supplément</div>
+        <div class="card-header">
+            Modifier des Suppléments
+        </div>
         <div class="card-body">
-            <form th:action="@{/updateSupplement}" th:object="${supplement}" method="post">
-                <input type="hidden" th:field="*{idSupplement}" />
+            <form th:action="@{saveSupplement}" method="post">
                 <div class="form-group">
-                    <label>Nom</label>
-                    <input type="text" class="form-control" th:field="*{nomSupplement}" />
+                    <label class="control-label" hidden>ID Supplément :</label>
+                    <input type="hidden" name="idSupplement" class="form-control"
+                           th:value="${supplement.idSupplement}" />
                 </div>
                 <div class="form-group">
-                    <label>Dosage</label>
-                    <input type="text" class="form-control" th:field="*{dosageSupplement}" />
+                    <label class="control-label">Nom Supplément :</label>
+                    <input type="text" name="nomSupplement" class="form-control"
+                           th:value="${supplement.nomSupplement}" />
+                    <span th:errors="${supplement.nomSupplement}" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Prix</label>
-                    <input type="number" step="0.01" class="form-control" th:field="*{prixSupplement}" />
+                    <label class="control-label">Dosage Supplément :</label>
+                    <input type="text" name="dosageSupplement" class="form-control"
+                           th:value="${supplement.dosageSupplement}" />
+                    <span th:errors="${supplement.dosageSupplement}" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Marque</label>
-                    <input type="text" class="form-control" th:field="*{marqueSupplement}" />
+                    <label class="control-label">Prix Supplément :</label>
+                    <input type="text" name="prixSupplement" class="form-control"
+                           th:value="${supplement.prixSupplement}" />
+                    <span th:errors="${supplement.prixSupplement}" class="text-danger"></span>
                 </div>
                 <div class="form-group">
-                    <label>Date de Création</label>
-                    <input type="date" class="form-control" name="date" th:value="${#dates.format(supplement.dateCreation, 'yyyy-MM-dd')}" />
+                    <label class="control-label">Marque Supplément :</label>
+                    <input type="text" name="marqueSupplement" class="form-control"
+                           th:value="${supplement.marqueSupplement}" />
+                    <span th:errors="${supplement.marqueSupplement}" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn btn-primary">Mettre à jour</button>
-                <a class="btn btn-secondary" th:href="@{/listeSupplements}">Annuler</a>
+                <div class="form-group">
+                    <label class="control-label">Date Création :</label>
+                    <input type="date" name="dateCreation" class="form-control"
+                           th:value="${supplement.dateCreation}" />
+                    <span th:errors="${supplement.dateCreation}" class="text-danger"></span>
+                </div>
+            
+                <div>
+                    <button type="submit" class="btn btn-primary">Valider</button>
+                </div>
             </form>
         </div>
     </div>

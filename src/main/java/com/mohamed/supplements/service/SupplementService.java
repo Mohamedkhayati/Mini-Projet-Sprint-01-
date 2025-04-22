@@ -25,6 +25,8 @@ public interface SupplementService {
     List<Supplement> findByNutritionalIdNutri(long id);
     List<Supplement> findByOrderByNomSupplementAsc();
     List<Supplement> trierSupplementsNomsPrix();
+    List<Nutritional> getAllNutritionals();
+
     
     
 }

@@ -1,12 +1,17 @@
 package com.mohamed.supplements.controllers;
 
-
+import com.mohamed.supplements.entities.Nutritional;
 import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.service.SupplementService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,14 +19,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class SupplementController {
 
     @Autowired
     private SupplementService supplementService;
+ 
 
-    // List supplements with pagination
+
     @RequestMapping("/listeSupplements")
     public String listeSupplements(ModelMap modelMap,
             @RequestParam(name = "page", defaultValue = "0") int page,
@@ -35,62 +42,83 @@ public class SupplementController {
         return "listeSupplements";
     }
 
-
-    // Show create form
     @RequestMapping("/showCreate")
-    public String showCreate(ModelMap modelMap) {
+    public String showCreate(ModelMap modelMap,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size) {
+        List<Nutritional> nutritionals = supplementService.getAllNutritionals();
         modelMap.addAttribute("supplement", new Supplement());
-        return "createSupplement";
+        modelMap.addAttribute("mode", "new");
+        modelMap.addAttribute("nutritionals", nutritionals);
+        modelMap.addAttribute("page", page);
+        modelMap.addAttribute("size", size);
+        return "formSupplement";
     }
 
     @RequestMapping("/saveSupplement")
-    public String saveSupplement(@ModelAttribute("supplement") Supplement supplement,
-                               @RequestParam("date") String date,
-                               ModelMap modelMap) throws ParseException {
+    public String saveSupplement(@Valid @ModelAttribute("supplement") Supplement supplement,
+                                 BindingResult bindingResult,
+                                 @RequestParam(name = "dateCreation", defaultValue = "") String dateStr,
+                                 @RequestParam(name = "page", defaultValue = "0") int page,
+                                 @RequestParam(name = "size", defaultValue = "5") int size,
+                                 ModelMap modelMap) throws ParseException {
         
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateCreation = dateFormat.parse(date);
-        supplement.setDateCreation(dateCreation);
+        // Handle date conversion
+        if (!dateStr.isEmpty()) {
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateFormat.setLenient(false);
+                Date dateCreation = dateFormat.parse(dateStr);
+                supplement.setDateCreation(dateCreation);
+            } catch (ParseException e) {
+                bindingResult.rejectValue("dateCreation", "error.supplement", "Format de date invalide (yyyy-MM-dd)");
+            }
+        }
 
-        Supplement savedSupplement = supplementService.saveSupplement(supplement);
-        String msg = "Supplément enregistré avec ID " + savedSupplement.getIdSupplement();
-        modelMap.addAttribute("msg", msg);
-        return "createSupplement";
+        List<Nutritional> nutritionals = supplementService.getAllNutritionals();
+        modelMap.addAttribute("nutritionals", nutritionals);
+        modelMap.addAttribute("mode", supplement.getIdSupplement() == null ? "new" : "edit");
+        modelMap.addAttribute("page", page);
+        modelMap.addAttribute("size", size);
+
+        if (bindingResult.hasErrors()) {
+            return "formSupplement";
+        }
+
+        supplementService.saveSupplement(supplement);
+        return "redirect:/listeSupplements?page=" + page + "&size=" + size;
     }
 
-    // Delete supplement
     @RequestMapping("/supprimerSupplement")
     public String supprimerSupplement(@RequestParam("id") Long id,
-            ModelMap modelMap,
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size) {
-        
         supplementService.deleteSupplementById(id);
-        Page<Supplement> supps = supplementService.getAllSupplementsParPage(page, size);
-        modelMap.addAttribute("supplements", supps);
-        modelMap.addAttribute("pages", new int[supps.getTotalPages()]);
-        modelMap.addAttribute("currentPage", page);
-        modelMap.addAttribute("size", size);
-        return "listeSupplements";
+        return "redirect:/listeSupplements?page=" + page + "&size=" + size;
     }
 
-    // Edit supplement
     @RequestMapping("/modifierSupplement")
-    public String editerSupplement(@RequestParam("id") Long id, ModelMap modelMap) {
+    public String editerSupplement(@RequestParam("id") Long id,
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "5") int size,
+            ModelMap modelMap) {
         Supplement s = supplementService.getSupplement(id);
+        List<Nutritional> nutritionals = supplementService.getAllNutritionals();
         modelMap.addAttribute("supplement", s);
-        return "editerSupplement";
+        modelMap.addAttribute("mode", "edit");
+        modelMap.addAttribute("nutritionals", nutritionals);
+        modelMap.addAttribute("page", page);
+        modelMap.addAttribute("size", size);
+        return "formSupplement";
     }
 
-    // Update supplement
-    @RequestMapping("/updateSupplement")
-    public String updateSupplement(@ModelAttribute("supplement") Supplement supplement,
-                                   @RequestParam("date") String date,
-                                   ModelMap modelMap) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date dateCreation = dateFormat.parse(date);
-        supplement.setDateCreation(dateCreation);
-        supplementService.updateSupplement(supplement);
-        return "redirect:/listeSupplements";
+    @RequestMapping({"/", "/index"})
+    public String index(ModelMap modelMap) {
+        return "index";
+    }
+    @GetMapping("/accessDenied")
+    public String error()
+    {
+    return "accessDenied";
     }
 }

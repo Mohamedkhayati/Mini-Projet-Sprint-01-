@@ -25,44 +25,7 @@ public class Nutritional {
     @OneToMany(mappedBy = "nutritional")
     private List<Supplement> supplements;
     
-    public Nutritional() {}
+  
     
-    public Nutritional(String nomNutri, String descriptionNutri, List<Supplement> supplements) {
-        super();
-        this.nomNutri = nomNutri;
-        this.descriptionNutri = descriptionNutri;
-        this.supplements = supplements;
-    }
     
-    public Long getIdNutri() {
-        return idNutri;
-    }
-    
-    public void setIdNutri(Long idNutri) {
-        this.idNutri = idNutri;
-    }
-    
-    public String getNomNutri() {
-        return nomNutri;
-    }
-    
-    public void setNomNutri(String nomNutri) {
-        this.nomNutri = nomNutri;
-    }
-    
-    public String getDescriptionNutri() {
-        return descriptionNutri;
-    }
-    
-    public void setDescriptionNutri(String descriptionNutri) {
-        this.descriptionNutri = descriptionNutri;
-    }
-    
-    public List<Supplement> getSupplements() {
-        return supplements;
-    }
-    
-    public void setSupplements(List<Supplement> supplements) {
-        this.supplements = supplements;
-    }
 }

@@ -3,6 +3,7 @@ package com.mohamed.supplements.service;
 
 import com.mohamed.supplements.entities.Nutritional;
 import com.mohamed.supplements.entities.Supplement;
+import com.mohamed.supplements.repos.NutritionalRepository;
 import com.mohamed.supplements.repos.SupplementRepository;
 
 import java.util.List;
@@ -92,6 +93,13 @@ public class SupplementServiceImpl implements SupplementService {
 	public List<Supplement> trierSupplementsNomsPrix() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	@Autowired
+	NutritionalRepository nutritionalRepository;
+
+	@Override
+	public List<Nutritional> getAllNutritionals() {
+	    return nutritionalRepository.findAll();
 	}
 
   /*  @Override
