@@ -1,58 +1,82 @@
 package com.mohamed.supplements.security;
 
+import javax.sql.DataSource;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+
 @Configuration
 public class SecurityConfig {
-	@Bean
-	SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception
-	{
-	 http.authorizeHttpRequests((requests)->requests
+    @Bean
+    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/showCreate", "/saveSupplement").hasAnyAuthority("ADMIN", "AGENT")
+                .requestMatchers("/supprimerSupplement", "/modifierSupplement").hasAnyAuthority("ADMIN")
+                .requestMatchers("/ListeSupplements").hasAnyAuthority("ADMIN", "AGENT", "USER")
+                .requestMatchers("/login","/webjars/**").permitAll()
 
-	.requestMatchers("/showCreate","/saveProduit").hasAnyAuthority("ADMIN","AGENT")
-	.requestMatchers("/supprimerSupplement","/modifierSupplement").hasAnyAuthority("ADMIN")
-	.requestMatchers("/ListeProduits").hasAnyAuthority("ADMIN","AGENT","USER")
-	.anyRequest().authenticated())
+                .anyRequest().authenticated())
+        		.formLogin((formLogin) -> formLogin
+        		 .loginPage("/login")
+        		 .defaultSuccessUrl("/") )
+            .formLogin(Customizer.withDefaults())
+            .httpBasic(Customizer.withDefaults())
+            .exceptionHandling((exception) ->
+                exception.accessDeniedPage("/accessDenied"));
 
-	 .formLogin(Customizer.withDefaults())
-	 .httpBasic(Customizer.withDefaults())
-	 .exceptionHandling((exception)->
-	 exception.accessDeniedPage("/accessDenied"));
+        return http.build();
+    }
 
-	 return http.build();
-	}
-	@Bean
-	 public PasswordEncoder passwordEncoder () {
-	 return new BCryptPasswordEncoder();
-	 }
-	@Bean
-	 public InMemoryUserDetailsManager userDetailsService() {
-	 PasswordEncoder passwordEncoder = passwordEncoder ();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	 UserDetails admin = User
-	 .withUsername("admin")
-	 .password(passwordEncoder.encode("123"))
-	 .authorities("ADMIN")
-	 .build();
-	 UserDetails userMohamed = User
-	 .withUsername("mohamed")
-	 .password(passwordEncoder.encode("123"))
-	 .authorities("AGENT","USER")
-	 .build();
-	 UserDetails user1 = User
-	 .withUsername("user1")
-	 .password(passwordEncoder.encode("123"))
-	 .authorities("USER")
-	 .build();
+   /* @Bean
+    public UserDetailsService userDetailsService(DataSource dataSource) {
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
 
-	 return new InMemoryUserDetailsManager(admin, userMohamed,user1);
-	 }
+        jdbcUserDetailsManager.setUsersByUsernameQuery(
+            "select username, password, enabled from user where username = ?");
+            
+        jdbcUserDetailsManager.setAuthoritiesByUsernameQuery(
+            "SELECT u.username, r.role as authority " +
+            "FROM user_role ur, user u, role r " +
+            "WHERE u.user_id = ur.user_id AND ur.role_id = r.role_id AND u.username = ?");
+
+        return jdbcUserDetailsManager;
+    }*/
+    
+    /*@Bean
+    public InMemoryUserDetailsManager userDetailsService() {
+        PasswordEncoder passwordEncoder = passwordEncoder();
+
+        UserDetails admin = User
+            .withUsername("admin")
+            .password(passwordEncoder.encode("123"))
+            .authorities("ADMIN")
+            .build();
+        UserDetails userMohamed = User
+            .withUsername("mohamed")
+            .password(passwordEncoder.encode("123"))
+            .authorities("AGENT","USER")
+            .build();
+        UserDetails user1 = User
+            .withUsername("user1")
+            .password(passwordEncoder.encode("123"))
+            .authorities("USER")
+            .build();
+
+        return new InMemoryUserDetailsManager(admin, userMohamed, user1);
+    }*/
 }

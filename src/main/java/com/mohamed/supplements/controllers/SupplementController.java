@@ -112,10 +112,10 @@ public class SupplementController {
         return "formSupplement";
     }
 
-    @RequestMapping({"/", "/index"})
+ /**   @RequestMapping({"/", "/index"})
     public String index(ModelMap modelMap) {
         return "index";
-    }
+    }*/
     @GetMapping("/accessDenied")
     public String error()
     {
