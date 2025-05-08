@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -17,29 +18,43 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
-    @Bean
-    SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/showCreate", "/saveSupplement").hasAnyAuthority("ADMIN", "AGENT")
-                .requestMatchers("/supprimerSupplement", "/modifierSupplement").hasAnyAuthority("ADMIN")
+	 @Bean
+	    public PasswordEncoder passwordEncoder() {
+	        return new BCryptPasswordEncoder();
+	    }
+	@Bean
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(requests -> requests
+        		.requestMatchers(HttpMethod.GET, "/supplements/api/**").permitAll()
+        	    .requestMatchers(HttpMethod.POST, "/supplements/api/**").permitAll()
+
+                // USER, AGENT, ADMIN → peuvent consulter
                 .requestMatchers("/ListeSupplements").hasAnyAuthority("ADMIN", "AGENT", "USER")
+
+                // AGENT et ADMIN peuvent afficher formulaire de création
+                .requestMatchers("/showCreate").hasAnyAuthority("ADMIN", "AGENT")
+
+                // AGENT et ADMIN peuvent ajouter
+                .requestMatchers("/saveSupplements").hasAnyAuthority("ADMIN", "AGENT")
+
+                // ADMIN seul peut modifier, supprimer, mettre à jour
+                .requestMatchers("/modifierSupplement", "/supprimerSupplement", "/updateSupplement").hasAuthority("ADMIN")
                 .requestMatchers("/login","/webjars/**").permitAll()
-
+                .requestMatchers(HttpMethod.GET,"/suupplements/api/**").permitAll()
+                .requestMatchers(HttpMethod.POST,"/suupplements/api/**").permitAll()
                 .anyRequest().authenticated())
-        		.formLogin((formLogin) -> formLogin
+        
+        //.formLogin(Customizer.withDefaults())
+        .formLogin((formLogin) -> formLogin
         		 .loginPage("/login")
-        		 .defaultSuccessUrl("/") )
-            .formLogin(Customizer.withDefaults())
-            .httpBasic(Customizer.withDefaults())
-            .exceptionHandling((exception) ->
-                exception.accessDeniedPage("/accessDenied"));
+        		 .defaultSuccessUrl("/"))
+        
+        .httpBasic(Customizer.withDefaults())
+        .exceptionHandling(exception -> exception.accessDeniedPage("/accessDenied"))
+        .csrf(csrf -> csrf.disable());
 
+        
         return http.build();
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
    /* @Bean

@@ -1,13 +1,16 @@
 // SupplementServiceImpl.java
 package com.mohamed.supplements.service;
 
+import com.mohamed.supplements.dto.SupplementDTO;
 import com.mohamed.supplements.entities.Nutritional;
 import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.repos.NutritionalRepository;
 import com.mohamed.supplements.repos.SupplementRepository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,16 +21,17 @@ public class SupplementServiceImpl implements SupplementService {
 
     @Autowired
     private SupplementRepository supplementRepository;
-
+    @Autowired
+    ModelMapper modelMapper;
     // Existing methods
     @Override
-    public Supplement saveSupplement(Supplement s) {
-        return supplementRepository.save(s);
+    public SupplementDTO saveSupplement(SupplementDTO  s) {
+        return convertEntityToDto(supplementRepository.save(convertDtoToEntity(s)));
     }
 
     @Override
-    public Supplement updateSupplement(Supplement s) {
-        return supplementRepository.save(s);
+    public Supplement updateSupplement(SupplementDTO  s) {
+        return supplementRepository.save(convertDtoToEntity(s));
     }
 
     @Override
@@ -41,14 +45,28 @@ public class SupplementServiceImpl implements SupplementService {
     }
 
     @Override
-    public Supplement getSupplement(Long id) {
-        return supplementRepository.findById(id).orElse(null);
+    public SupplementDTO getSupplement(Long id) {
+        return convertEntityToDto(supplementRepository.findById(id).orElse(null));
     }
 
     @Override
-    public List<Supplement> getAllSupplements() {
-        return supplementRepository.findAll();
+    public List<SupplementDTO> getAllSupplements() {
+        return supplementRepository.findAll().stream()
+            .map(this::convertEntityToDto)
+            .collect(Collectors.toList());
+        //OU BIEN
+        /*List<Supplement> supplements = supplementRepository.findAll();
+        List<SupplementDTO> listSuppDto = new ArrayList<>(supplements.size());
+        for (Supplement s : supplements)
+            listSuppDto.add(convertEntityToDto(s));
+        return listSuppDto;*/
     }
+    @Override
+    public Supplement convertDtoToEntity(SupplementDTO supplementDto) {
+        return modelMapper.map(supplementDto, Supplement.class);
+    }
+
+
 
     // New method for pagination
     @Override
@@ -101,6 +119,24 @@ public class SupplementServiceImpl implements SupplementService {
 	public List<Nutritional> getAllNutritionals() {
 	    return nutritionalRepository.findAll();
 	}
+	@Override
+	public SupplementDTO convertEntityToDto(Supplement supplement) {
+	    SupplementDTO supplementDTO = modelMapper.map(supplement, SupplementDTO.class);
+	    return supplementDTO;
+	
+
+
+	    /*return SupplementDTO.builder()
+	        .idSupplement(supplement.getIdSupplement())
+	        .nomSupplement(supplement.getNomSupplement())
+	        .dosageSupplement(supplement.getDosageSupplement())
+	        .prixSupplement(supplement.getPrixSupplement())
+	        .marqueSupplement(supplement.getMarqueSupplement())
+	        .dateCreation(supplement.getDateCreation())
+	        .nutritional(supplement.getNutritional())
+	        .build();*/
+	}
+
 
   /*  @Override
     public List<Supplement> findByNomPrix(String nom, Double prix) {

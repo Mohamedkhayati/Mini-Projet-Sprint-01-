@@ -47,12 +47,12 @@ return userRep.findByUsername(username);
 }
 @Override
 public boolean roleExists(String roleName) {
-	// TODO Auto-generated method stub
-	return false;
+    return roleRep.findByRole(roleName) != null;
 }
+
 @Override
 public boolean userExists(String username) {
-	// TODO Auto-generated method stub
-	return false;
+    return userRep.findByUsername(username) != null;
 }
+
 }

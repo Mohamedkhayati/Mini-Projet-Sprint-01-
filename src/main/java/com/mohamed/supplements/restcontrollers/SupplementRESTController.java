@@ -3,11 +3,14 @@ package com.mohamed.supplements.restcontrollers;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.mohamed.supplements.dto.SupplementDTO;
 import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.service.SupplementService;
 
@@ -20,26 +23,26 @@ public class SupplementRESTController {
     SupplementService supplementService;
 
     // 1. Get all supplements
-    @RequestMapping(method = RequestMethod.GET)
-    public List<Supplement> getAllSupplements() {
+    @GetMapping
+    public List<SupplementDTO> getAllSupplements() {
         return supplementService.getAllSupplements();
     }
 
     // 2. Get a supplement by ID
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Supplement getSupplementById(@PathVariable("id") Long id) {
+    public SupplementDTO getSupplementById(@PathVariable("id") Long id) {
         return supplementService.getSupplement(id);
     }
 
     // 3. Create a supplement
     @RequestMapping(method = RequestMethod.POST)
-    public Supplement createSupplement(@RequestBody Supplement supplement) {
+    public SupplementDTO createSupplement(@RequestBody SupplementDTO supplement) {
         return supplementService.saveSupplement(supplement);
     }
 
     // 4. Update a supplement
     @RequestMapping(method = RequestMethod.PUT)
-    public Supplement updateSupplement(@RequestBody Supplement supplement) {
+    public Supplement updateSupplement(@RequestBody SupplementDTO supplement) {
         return supplementService.updateSupplement(supplement);
     }
 

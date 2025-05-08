@@ -1,5 +1,6 @@
 package com.mohamed.supplements.controllers;
 
+import com.mohamed.supplements.dto.SupplementDTO;
 import com.mohamed.supplements.entities.Nutritional;
 import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.service.SupplementService;
@@ -56,7 +57,7 @@ public class SupplementController {
     }
 
     @RequestMapping("/saveSupplement")
-    public String saveSupplement(@Valid @ModelAttribute("supplement") Supplement supplement,
+    public String saveSupplement(@Valid @ModelAttribute("supplement") SupplementDTO supplement,
                                  BindingResult bindingResult,
                                  @RequestParam(name = "dateCreation", defaultValue = "") String dateStr,
                                  @RequestParam(name = "page", defaultValue = "0") int page,
@@ -102,7 +103,7 @@ public class SupplementController {
             @RequestParam(name = "page", defaultValue = "0") int page,
             @RequestParam(name = "size", defaultValue = "5") int size,
             ModelMap modelMap) {
-        Supplement s = supplementService.getSupplement(id);
+        SupplementDTO s = supplementService.getSupplement(id);
         List<Nutritional> nutritionals = supplementService.getAllNutritionals();
         modelMap.addAttribute("supplement", s);
         modelMap.addAttribute("mode", "edit");
