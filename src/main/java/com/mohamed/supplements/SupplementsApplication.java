@@ -1,9 +1,10 @@
 package com.mohamed.supplements;
 
 import com.mohamed.supplements.entities.Role;
+import com.mohamed.supplements.entities.Supplement;
 import com.mohamed.supplements.entities.User;
 import com.mohamed.supplements.service.SupplementService;
-import com.mohamed.supplements.service.UserService;
+/*import com.mohamed.supplements.service.UserService;*/
 
 import jakarta.annotation.PostConstruct;
 
@@ -13,23 +14,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+/*import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;*/
 
 @SpringBootApplication
 public class SupplementsApplication implements CommandLineRunner {
 
     private final SupplementService supplementService;
-    private final PasswordEncoder passwordEncoder;
-    private final UserService userService;
+    /*private final PasswordEncoder passwordEncoder;*/
+    /*private final UserService userService;*/
 
     @Autowired
-    public SupplementsApplication(SupplementService supplementService,
-                                  PasswordEncoder passwordEncoder,
-                                  UserService userService) {
+    public SupplementsApplication(SupplementService supplementService
+                                  /*PasswordEncoder passwordEncoder,*/) {
         this.supplementService = supplementService;
-        this.passwordEncoder = passwordEncoder;
-        this.userService = userService;
+      /*  this.passwordEncoder = passwordEncoder;*/
+      /*  this.userService = userService;*/
     }
   
     public static void main(String[] args) {
@@ -38,8 +38,9 @@ public class SupplementsApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        System.out.println("Password Encoded BCRYPT :******************** ");
-        System.out.println(passwordEncoder.encode("123"));
+
+      /*  System.out.println("Password Encoded BCRYPT :******************** ");
+        System.out.println(passwordEncoder.encode("123"));*/
 
         // Example to add supplements
         /*
@@ -49,7 +50,7 @@ public class SupplementsApplication implements CommandLineRunner {
         */
     }
 
-    @PostConstruct
+  /*  @PostConstruct
     public void initUsers() {
         // Add roles if not exist
         if (!userService.roleExists("ADMIN")) userService.addRole(new Role(null, "ADMIN"));
@@ -69,6 +70,6 @@ public class SupplementsApplication implements CommandLineRunner {
         userService.addRoleToUser("mohamed", "USER");
         userService.addRoleToUser("mohamed", "AGENT");
         userService.addRoleToUser("user1", "USER");
-    }
+    }*/
 
 }

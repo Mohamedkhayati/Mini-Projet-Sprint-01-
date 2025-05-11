@@ -18,10 +18,13 @@ public interface SupplementRepository extends JpaRepository<Supplement, Long> {
     @Query("select s from Supplement s where s.nutritional = ?1")
     List<Supplement> findByNutritional(Nutritional nutritional);
     
-    List<Supplement> findByNutritionalIdNutri(Long id);
     
     List<Supplement> findByOrderByNomSupplementAsc();
     
     @Query("select s from Supplement s order by s.nomSupplement ASC, s.prixSupplement DESC")
     List<Supplement> trierSupplementsNomsPrix();
+
+    @Query("SELECT s FROM Supplement s WHERE s.nutritional.idNutri = :id")
+    List<Supplement> findByNutritionalIdNutri(@Param("id") Long id);
+    
 }

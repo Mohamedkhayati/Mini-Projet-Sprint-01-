@@ -1,4 +1,3 @@
-// SupplementServiceImpl.java
 package com.mohamed.supplements.service;
 
 import com.mohamed.supplements.dto.SupplementDTO;
@@ -21,16 +20,20 @@ public class SupplementServiceImpl implements SupplementService {
 
     @Autowired
     private SupplementRepository supplementRepository;
+    
     @Autowired
-    ModelMapper modelMapper;
-    // Existing methods
+    private NutritionalRepository nutritionalRepository;
+    
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
-    public SupplementDTO saveSupplement(SupplementDTO  s) {
+    public SupplementDTO saveSupplement(SupplementDTO s) {
         return convertEntityToDto(supplementRepository.save(convertDtoToEntity(s)));
     }
 
     @Override
-    public Supplement updateSupplement(SupplementDTO  s) {
+    public Supplement updateSupplement(SupplementDTO s) {
         return supplementRepository.save(convertDtoToEntity(s));
     }
 
@@ -54,25 +57,13 @@ public class SupplementServiceImpl implements SupplementService {
         return supplementRepository.findAll().stream()
             .map(this::convertEntityToDto)
             .collect(Collectors.toList());
-        //OU BIEN
-        /*List<Supplement> supplements = supplementRepository.findAll();
-        List<SupplementDTO> listSuppDto = new ArrayList<>(supplements.size());
-        for (Supplement s : supplements)
-            listSuppDto.add(convertEntityToDto(s));
-        return listSuppDto;*/
-    }
-    @Override
-    public Supplement convertDtoToEntity(SupplementDTO supplementDto) {
-        return modelMapper.map(supplementDto, Supplement.class);
     }
 
-
-
-    // New method for pagination
     @Override
     public Page<Supplement> getAllSupplementsParPage(int page, int size) {
         return supplementRepository.findAll(PageRequest.of(page, size));
     }
+
     @Override
     public List<Supplement> findByNomSupplement(String nom) {
         return supplementRepository.findByNomSupplement(nom);
@@ -83,62 +74,7 @@ public class SupplementServiceImpl implements SupplementService {
         return supplementRepository.findByNomSupplementContains(nom);
     }
 
-	@Override
-	public List<Supplement> findByNomPrix(String nom, Double prix) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Supplement> findByNutritional(Nutritional nutritional) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Supplement> findByNutritionalIdNutri(long id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Supplement> findByOrderByNomSupplementAsc() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Supplement> trierSupplementsNomsPrix() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Autowired
-	NutritionalRepository nutritionalRepository;
-
-	@Override
-	public List<Nutritional> getAllNutritionals() {
-	    return nutritionalRepository.findAll();
-	}
-	@Override
-	public SupplementDTO convertEntityToDto(Supplement supplement) {
-	    SupplementDTO supplementDTO = modelMapper.map(supplement, SupplementDTO.class);
-	    return supplementDTO;
-	
-
-
-	    /*return SupplementDTO.builder()
-	        .idSupplement(supplement.getIdSupplement())
-	        .nomSupplement(supplement.getNomSupplement())
-	        .dosageSupplement(supplement.getDosageSupplement())
-	        .prixSupplement(supplement.getPrixSupplement())
-	        .marqueSupplement(supplement.getMarqueSupplement())
-	        .dateCreation(supplement.getDateCreation())
-	        .nutritional(supplement.getNutritional())
-	        .build();*/
-	}
-
-
-  /*  @Override
+    @Override
     public List<Supplement> findByNomPrix(String nom, Double prix) {
         return supplementRepository.findByNomPrix(nom, prix);
     }
@@ -149,7 +85,7 @@ public class SupplementServiceImpl implements SupplementService {
     }
 
     @Override
-    public List<Supplement> findByNutritionalIdNutri(long id) {
+    public List<Supplement> findByNutritionalIdNutri(Long id) {
         return supplementRepository.findByNutritionalIdNutri(id);
     }
 
@@ -161,5 +97,20 @@ public class SupplementServiceImpl implements SupplementService {
     @Override
     public List<Supplement> trierSupplementsNomsPrix() {
         return supplementRepository.trierSupplementsNomsPrix();
-    }*/
+    }
+
+    @Override
+    public List<Nutritional> getAllNutritionals() {
+        return nutritionalRepository.findAll();
+    }
+
+    @Override
+    public Supplement convertDtoToEntity(SupplementDTO supplementDto) {
+        return modelMapper.map(supplementDto, Supplement.class);
+    }
+
+    @Override
+    public SupplementDTO convertEntityToDto(Supplement supplement) {
+        return modelMapper.map(supplement, SupplementDTO.class);
+    }
 }

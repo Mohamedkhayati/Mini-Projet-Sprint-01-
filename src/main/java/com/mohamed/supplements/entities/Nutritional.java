@@ -20,7 +20,6 @@ public class Nutritional {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idNutri;
     private String nomNutri;
-    private String descriptionNutri;
     @JsonIgnore
     @OneToMany(mappedBy = "nutritional")
     private List<Supplement> supplements;
